@@ -1,0 +1,28 @@
+body{
+    padding: 0;
+    margin: 0;
+}
+canvas{
+    border: 1px dashed;
+    display: block;
+    margin:auto;
+}
+
+#left{
+    position: fixed;
+    left: 0px;
+    top: 20%;
+    z-index: 999;
+}
+#right{
+    position: fixed;
+    right: 0px;
+    top: 20%;
+    z-index: 999;
+}
+#clear{
+    position: fixed;
+    right: 0px;
+    top: 40%;
+    z-index: 999;
+}
