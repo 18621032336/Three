@@ -1,9 +1,6 @@
-define(function(require) {
+var SOCKET_HOST = 'ws://172.16.24.184:18088';
+//var SOCKET_HOST = 'http://pathreplaysocket.duapp.com/';
 
-    var SOCKET_HOST = 'ws://192.168.0.102:18088';
-
-    return {
-        SOCKET_HOST:SOCKET_HOST
-    };
-
-})
+module.exports = {
+  SOCKET_HOST: SOCKET_HOST
+}
