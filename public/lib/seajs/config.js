@@ -1,6 +1,6 @@
 // Set configuration
 seajs.config({
-    base: "/public/Three/public",
+    base: "/",
     alias: {
         "core":"dist/script/path-core.js",
         "base":"dist/script/base.js",
