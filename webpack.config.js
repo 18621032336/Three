@@ -1,7 +1,10 @@
 module.exports = {
   entry: {
-    "cmd": "./public/dist/script/control/cmd.js",
-    "default": "./public/dist/script/control/default.js"
+    //"cmd": "./public/dist/script/control/cmd.js",
+    //"default": "./public/dist/script/control/default.js",
+    "command": "./public/dist/script/command/command.js",
+    "popupbox": "./public/dist/script/test/react-popupbox.js",
+    "ES6TEST": "./public/dist/script/test/ES6Test.js"
   },
   output: {
     path: __dirname + '/public/built',
@@ -28,6 +31,7 @@ module.exports = {
     alias: {
       "script": './public/dist/script',
       "lib": "./public/lib",
+      "less": __dirname + "/less",
 
       "core": __dirname + "/public/dist/script/path-core.js",
       "base": __dirname + "/public/dist/script/base.js",
