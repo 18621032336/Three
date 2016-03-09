@@ -20,5 +20,4 @@ function preventDefaultTouch() {
 
 module.exports = {
   preventDefaultTouch: preventDefaultTouch
-}
-;
+};
