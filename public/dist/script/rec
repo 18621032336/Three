@@ -1,0 +1,54 @@
+let list = ['A', 'B', 'C', 'D', 'E', 'F'];
+let length = list.length;
+let all = [];
+rec(list, 1, 2);
+function rec(list, x, y) {
+	all.push(list.join(''));
+	let copyList = [...list];
+	if (x < length) {
+		let step = copyList[x];
+		copyList[x] = copyList[x - 1];
+		copyList[x - 1] = step;
+	} else {
+		let step = copyList[0];
+		copyList[0] = copyList[length - 1];
+		copyList[length - 1] = step;
+	}
+
+	if (x > 1) {
+		rec(copyList, x - 1, y);
+	}
+	if (y <= length) {
+		rec(list, y, y + 1)
+	}
+
+}
+//console.log(all);
+
+let right = 0, // 检查正确率
+	wrong = 0;
+[
+	for (i of list)
+		for (j of list)
+			for (k of list)
+				for (x of list)
+					for (y of list)
+						for (z of list)
+							if (norep(i, j, k, x, y, z))
+								`${i}${j}${k}${x}${y}${z}`
+].forEach(function(item) {
+	if (all.includes(item))
+		right++;
+	else
+		wrong++;
+})
+
+console.log(`right:${right};wrong:${wrong};`);
+function norep(i, j, k, x, y, z) {
+	let result = true;
+	for (let [inx, ele] of list.entries()) {
+		if (![...arguments].includes(ele))
+			result = false;
+	}
+	return result;
+}
