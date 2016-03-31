@@ -1,18 +1,19 @@
+
 let list = ['A', 'B', 'C', 'D', 'E', 'F'];
 let length = list.length;
 let all = [];
 rec(list, 1, 2);
+
 function rec(list, x, y) {
-	all.push(list.join(''));
+	let listStr = list.join('');
+	//	if (!all.includes(listStr))
+	all.push(listStr);
+
 	let copyList = [...list];
-	if (x < length) {
-		let step = copyList[x];
-		copyList[x] = copyList[x - 1];
-		copyList[x - 1] = step;
-	} else {
-		let step = copyList[0];
-		copyList[0] = copyList[length - 1];
-		copyList[length - 1] = step;
+	if (x < length) { // x - 1 交换
+		[copyList[x], copyList[x - 1]] = [copyList[x - 1], copyList[x]]
+	} else { // 0 末交换
+		[copyList[0], copyList[length - 1]] = [copyList[length - 1], copyList[0]]
 	}
 
 	if (x > 1) {
@@ -23,7 +24,8 @@ function rec(list, x, y) {
 	}
 
 }
-//console.log(all);
+console.log(all);
+
 
 let right = 0, // 检查正确率
 	wrong = 0;
