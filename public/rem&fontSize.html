@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>rem&fontSize</title>
+    <style>
+        html, body {
+            background: #fff;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .canvas-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .canvas-container > canvas {
+            background: rgba(0, 0, 0, 0);
+        }
+
+        [class^=step] {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            left: -2000px;
+            top: -2000px;
+            /*display: none;*/
+            transition: ease-in 1500ms;
+        }
+
+        [class^=step].active {
+            display: block;
+            left: 0px;
+            top: 0px;
+            transform: rotateX(360deg) rotate(360deg);
+        }
+
+        [class^=step] span {
+            font-size: 16px;
+        }
+
+        [class^=step] h2 {
+            padding-left: 22px;
+        }
+
+        .step1 {
+
+        }
+
+        .step1 > div.ui {
+            position: absolute;
+            width: 260px;
+            height: 460px;
+            background: #ccc;
+            left: 100px;
+            top: 40px;
+            padding: 20px;
+            font-size: 0px;
+        }
+
+        .step1 > div.ui > label {
+            width: 124px;
+            height: 124px;
+            display: inline-block;
+            background: #fff;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            float: left;
+            text-align: center;
+        }
+
+        .step1 > div.ui > label:nth-child(2n) {
+            margin-right: 0px;
+        }
+
+        .step1 > .ip5 {
+            position: absolute;
+            background: #ccc;
+            left: 600px;
+            top: 30px;
+            width: 100px;
+            height: calc(100px / 0.568);
+            text-align: center;
+        }
+
+        .step1 > .ip6 {
+            position: absolute;
+            background: #ccc;
+            left: 700px;
+            top: 220px;
+            width: calc(100px / 0.85);
+            height: calc(100px / 0.568 / 0.85);
+            text-align: center;
+        }
+
+        .step1 > .ip6p {
+            position: absolute;
+            background: #ccc;
+            left: 540px;
+            top: 363px;
+            width: calc(100px / 0.77);
+            height: calc(100px / 0.568 / 0.77);
+            text-align: center;
+        }
+
+        #clear {
+            position: fixed;
+            right: 0px;
+            top: 0px;
+            z-index: 999999;
+        }
+    </style>
+</head>
+<body>
+<button id="clear">CLEAR</button>
+<div class="canvas-container">
+    <canvas id="pathCanvas" name="pathCanvas" width='2000' height='2000'></canvas>
+</div>
+<div class="main-body">
+    <div class="step1 active">
+        <div class="ui">
+            <label>
+                <span style="line-height: 80px">300px X 300px</span>
+                <span>头像</span>
+            </label>
+            <!--<label></label>-->
+            <!--<label></label>-->
+            <!--<label></label>-->
+            <span>
+                [36px]
+                public static void main
+                public static void main
+                public static void main
+                public static void main
+                public static void main
+                public static void main
+                public static void main
+                public static void main
+                public static void main
+                <br><br>
+                650 X 1080
+            </span>
+        </div>
+
+        <div class="ip5">
+            iPhone5
+            <p>320 X 568</p>
+        </div>
+        <div class="ip6">
+            iPhone6
+            <p>375 X 675</p>
+        </div>
+        <div class="ip6p">
+            iPhone6Plus
+            <p>414 X 736</p>
+        </div>
+    </div>
+    <div class="step2">
+        <h2>设备宽度 / 设计稿宽度 = 设计稿1px</h2>
+        <h2>iPhone5 ~~~~~ 320(iP5) / 650(UI) == 0.492px(iP5 1px) == 1px(UI 1px) </h2>
+        <h2>iPhone6 ~~~~~ 375(iP6) / 650(UI) == 0.577px(iP6 1px) == 1px(UI 1px) </h2>
+        <h2>&nbsp;</h2>
+        <h2>&nbsp;</h2>
+        <h2>REM</h2>
+    </div>
+    <div class="step3">
+        <h2></h2>
+        <h2>1rem == HTML{font-size: 20px}</h2>
+        <h2>&nbsp;</h2>
+        <h2>1rem == HTML{font-size: 0.492px} == UI 1px</h2>
+        <h2>&nbsp;</h2>
+        <h2>1rem == HTML{font-size: 49.2px} == UI 100px</h2>
+    </div>
+    <div class="step4">
+        <h2></h2>
+        <h2>设为 document.body.style.fontSize</h2>
+        <h2>为 document.documentElement.clientWidth / 6.5 + 'px'</h2>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    (function (win) {
+        win.pathR = pathR;
+
+        function pathR(canvas) {
+            var obj = new pathR.fn.init(canvas);
+
+            return obj;
+        }
+
+        pathR.prototype.init = function (canvas) {
+            var that = this;
+            this.isDown = false;
+            this.imgD; // grid backup
+            this.pos = {
+                x: 0,
+                y: 0
+            };
+            this.isdown = false;
+            this.startPoint = {};
+            this.toPoint = {};
+            this.emptyTimeout = 0;
+            this.playList = [];
+            this.replay = "";
+            this.context = canvas.getContext("2d");
+
+//            this.context.lineWidth = 0.5;
+            this.context.lineWidth = 2.5;
+            this.context.strokeStyle = "rgb(255,0,0)";
+
+            this.canvas = canvas;
+
+            canvas.onmousedown = function (e) {
+                mouseDown.call(that, e);
+            };
+
+            canvas.onmousemove = function (e) {
+                mouseMove.call(that, e);
+            };
+
+            canvas.onmouseup = function (e) {
+                mouseUp.call(that, e);
+            };
+
+        };
+        pathR.fn = pathR.prototype;
+        pathR.fn.init.prototype = pathR.prototype;
+
+        pathR.fn.drawGrid = function (style, color, step) {
+            var context = this.context;
+            var canvas = this.canvas;
+            context.save();
+            context.strokeStyle = color;
+            //context.lineWidth = 0.5;
+            var width = canvas.width;
+            var height = canvas.height;
+            var i = 0.5 + step;
+            for (; i <= width; i += step) {
+                begin(context, i, 0, i, height);
+            }
+
+            for (i = 0.5 + step; i <= height; i += step) {
+                begin(context, 0, i, width, i);
+            }
+            context.restore();
+
+            // backup
+            this.resetCanvas();
+        }
+
+        function begin(context, m1, m2, l1, l2) {
+            context.beginPath();
+            context.moveTo(m1, m2);
+            context.lineTo(l1, l2);
+            context.stroke();
+        }
+
+        // reset to grid
+        pathR.fn.resetCanvas = function () {
+            var context = this.context;
+            var canvas = this.canvas;
+//            var imgD = this.imgD;
+//
+//            if (!imgD) {
+//                imgD = context.getImageData(0, 0, canvas.width,
+//                    canvas.height);
+//                this.imgD = imgD;
+//            }
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+//            context.putImageData(imgD, 0, 0);
+        }
+
+        function mouseDown(e) {
+            this.isdown = true;
+            setPoint(e, this.canvas, this.startPoint);
+        }
+
+        function setPoint(e, canvas, point) { // adjustment position
+
+            var rect = canvas.getBoundingClientRect();  // 1
+            point.x = e.clientX - rect.left;
+            point.y = e.clientY - rect.top;
+        }
+
+        function mouseMove(e) {
+            var context = this.context;
+            if (this.isdown) {
+
+                setPoint(e, this.canvas, this.toPoint);
+
+                begin(context, this.startPoint.x, this.startPoint.y,
+                    this.toPoint.x, this.toPoint.y);
+
+                //replay.push([startPoint.x,startPoint.y,toPoint.x,toPoint.y]);
+                this.replay += "|" + [this.startPoint.x, this.startPoint.y,
+                    this.toPoint.x, this.toPoint.y].join(",");
+                clearTimeout(this.emptyTimeout);
+                setPoint(e, this.canvas, this.startPoint);
+
+            }
+
+        }
+
+        function mouseUp() {
+            this.isdown = false;
+            this.empty();
+        }
+
+        pathR.fn.clear = function () {
+
+            this.playList = [];
+            this.replay = "";
+            this.resetCanvas();
+        }
+
+        pathR.fn.back = function (num) {
+
+            if (isNaN(num)) {
+                alert("just number!");
+                return;
+            }
+            clearTimeout(this.emptyTimeout);
+            this.replay = this.replay.replace(/\|+$/, "");
+            var replayA = this.replay.split("|");
+            replayA.splice(replayA.length - num);
+
+            this.replay = replayA.join("|");
+            this.resetCanvas();
+            backPlay.call(this, replayA);
+        }
+
+        function backPlay(replayA) {
+            var context = this.context;
+            for (var i = 0; i < replayA.length; i++) {
+                var data = replayA[i];
+
+                if (data) {
+                    var points = data.split(",");
+                    begin(context, points[0], points[1], points[2], points[3]);
+                    context.closePath();
+                }
+
+            }
+        }
+
+        pathR.fn.play = function (data) {
+
+            if (data) {
+                this.playList = data.split("|");
+            } else {
+                this.playList = this.replay.split("|");
+            }
+
+            this.resetCanvas();
+
+            //console.log(playList);
+            playing.call(this);
+        };
+
+        function playing() {
+            var playList = this.playList;
+            var context = this.context;
+            var that = this;
+            if (playList.length > 0) {
+
+                var data = playList.shift();
+                if (data) {
+                    var points = data.split(",");
+                    begin(context, points[0], points[1], points[2], points[3]);
+                    context.closePath();
+                }
+
+                setTimeout(function () {
+                    playing.call(that);
+                }, 2);
+            }
+
+        }
+
+        pathR.fn.empty = function empty() {
+            //console.log("empty");
+            var that = this;
+            if (this.replay.length > 0) {
+                this.replay += "|";
+            }
+            if (this.replay.substr(this.replay.length - 31, 30) == "||||||||||||||||||||||||||||||") { // 30 frame buffer
+                return;
+            }
+            this.emptyTimeout = setTimeout(function () {
+                that.empty();
+            }, 50);
+        }
+    })(this);
+
+
+</script>
+<script>
+
+    (function () {
+        var canvas = document.getElementById("pathCanvas");
+        var pathObj = new pathR(canvas);
+
+        document.querySelector('#clear').onclick = function () {
+            pathObj.clear();
+        }
+        document.body.onkeydown = function (e) {
+//            console.log(e)
+            var activeNode = document.querySelector('.active')
+            switch (e.code) {
+                case "ArrowLeft":
+                    if (activeNode.previousElementSibling) {
+                        activeNode.className = activeNode.className.replace(' active', '')
+                        activeNode.previousElementSibling.className = activeNode.previousElementSibling.className + ' active'
+                    }
+                    break;
+                case "ArrowRight":
+                    if (activeNode.nextElementSibling) {
+                        activeNode.className = activeNode.className.replace(' active', '')
+                        activeNode.nextElementSibling.className = activeNode.nextElementSibling.className + ' active'
+                    }
+                    break;
+            }
+        }
+    })();
+
+</script>
